@@ -6,7 +6,7 @@
 - **Background**: Dark slate (`bg-slate-900`, `bg-slate-950`)
 
 ### Components Created
-- `src/App.js`: Layout chính của ứng dụng, render trang tạo Gains.
+- `src/App.js`: Component gốc, lắp ráp layout chính của ứng dụng bao gồm Header, GainsGenerator và Footer.
 - `src/components/Header.js`: Thanh điều hướng cố định.
 - `src/components/Footer.js`: Chân trang ứng dụng.
 - `src/components/GainsGenerator.js`: Giao diện chính để tạo bảng Gains, bao gồm form nhập liệu, tùy chọn thông minh và khu vực xem trước.
