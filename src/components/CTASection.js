@@ -17,13 +17,18 @@ export default function CTASection() {
             Sẵn Sàng Nâng Tầm Hồ Sơ Năng Lực Của Bạn?
           </h2>
           <p className="mt-4 text-lg text-red-100 max-w-2xl mx-auto">
-            Trải nghiệm sức mạnh của AI và tạo ra bảng Gains ấn tượng đầu tiên của bạn ngay hôm nay. Không cần thẻ tín dụng.
+            Trải nghiệm sức mạnh của AI và tạo ra bảng Gains đầu tiên của bạn ngay hôm nay. Hoàn toàn miễn phí để bắt đầu.
           </p>
           <div className="mt-8">
-            <a href="#" className="bg-white text-red-600 font-bold py-3 px-8 rounded-xl shadow-lg hover:bg-gray-100 hover:scale-105 transition-all duration-300 inline-flex items-center group">
-              Bắt Đầu Ngay - Hoàn Toàn Miễn Phí
-              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-            </a>
+            <motion.a
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              href="#"
+              className="inline-flex items-center justify-center px-8 py-3 text-base font-bold text-red-600 bg-white rounded-full shadow-lg transition-transform duration-200"
+            >
+              Tạo Bảng Gains Đầu Tiên
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </motion.a>
           </div>
         </motion.div>
       </div>
