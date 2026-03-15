@@ -15,44 +15,55 @@ const features = [
   },
   {
     icon: <Sparkles className="h-10 w-10 text-red-400" />,
-    title: 'Tối ưu hóa thông minh',
-    description: 'AI gợi ý cải thiện câu chữ, nhấn mạnh các từ khóa quan trọng và đánh giá mức độ chuyên nghiệp của bảng Gains.'
+    title: 'Tùy chỉnh linh hoạt',
+    description: 'Dễ dàng thay đổi màu sắc, font chữ, và bố cục để phù hợp với thương hiệu cá nhân hoặc doanh nghiệp của bạn.'
   },
   {
     icon: <Download className="h-10 w-10 text-red-400" />,
     title: 'Xuất file chất lượng cao',
-    description: 'Dễ dàng xuất bảng Gains ra các định dạng phổ biến như PNG, PDF với độ phân giải cao, sẵn sàng để in ấn hoặc chia sẻ.'
+    description: 'Xuất bảng Gains dưới dạng ảnh PNG, PDF siêu nét, sẵn sàng để in ấn hoặc chia sẻ trên các nền tảng số.'
   }
 ];
+
+const featureVariants = {
+  hidden: { opacity: 0, y: 50 },
+  visible: i => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.15,
+      duration: 0.5,
+      ease: 'easeOut'
+    }
+  })
+};
 
 export default function Features() {
   return (
     <section id="features" className="py-20 sm:py-24 bg-slate-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h2 className="text-base font-semibold text-red-400 tracking-wider uppercase">Tính năng</h2>
-          <p className="mt-2 text-3xl font-extrabold text-white sm:text-4xl">
-            Mọi thứ bạn cần để tạo nên sự khác biệt
-          </p>
-          <p className="mt-4 max-w-2xl mx-auto text-lg text-slate-400">
-            Gains AI tích hợp những công nghệ tiên tiến nhất để giúp bạn tạo ra hồ sơ năng lực ấn tượng một cách dễ dàng.
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-white">Tính Năng Vượt Trội</h2>
+          <p className="mt-4 text-lg text-slate-400 max-w-2xl mx-auto">
+            Công cụ mạnh mẽ giúp bạn tạo ra những bảng Gains ấn tượng và hiệu quả nhất.
           </p>
         </div>
-        <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           {features.map((feature, index) => (
-            <motion.div
-              key={feature.title}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
+            <motion.div 
+              key={index}
+              custom={index}
+              initial="hidden"
+              whileInView="visible"
               viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700 shadow-lg hover:border-red-500/50 transition-colors duration-300"
+              variants={featureVariants}
+              className="bg-slate-800/50 p-8 rounded-2xl border border-slate-700 text-center flex flex-col items-center"
             >
-              <div className="flex items-center justify-center h-16 w-16 rounded-xl bg-slate-700 mb-6">
+              <div className="bg-slate-900 p-4 rounded-full mb-6 inline-block">
                 {feature.icon}
               </div>
-              <h3 className="text-lg font-semibold text-white">{feature.title}</h3>
-              <p className="mt-2 text-base text-slate-400">{feature.description}</p>
+              <h3 className="text-xl font-bold text-white mb-2">{feature.title}</h3>
+              <p className="text-slate-400 text-base">{feature.description}</p>
             </motion.div>
           ))}
         </div>
