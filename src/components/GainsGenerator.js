@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
-import { User, Briefcase, Target, Award, Heart, Link, Wrench, Phone, Mail, Calendar, UploadCloud, Wand2 } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { User, Briefcase, Target, Award, Heart, Link as LinkIcon, Wrench, Phone, Mail, Calendar, UploadCloud, Wand2, Loader, Palette, Download } from 'lucide-react';
 import { motion } from 'framer-motion';
 import GainsPreview from './GainsPreview';
+import DynamicListInput from './DynamicListInput';
+import GenerationOptions from './GenerationOptions';
+import ColorOptions from './ColorOptions';
 
 const InputField = ({ icon, label, name, value, onChange, placeholder, type = "text" }) => (
   <div>
@@ -15,87 +18,60 @@ const InputField = ({ icon, label, name, value, onChange, placeholder, type = "t
       value={value}
       onChange={onChange}
       placeholder={placeholder}
-      className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500 transition"
+      className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 placeholder-slate-500 focus:ring-2 focus:ring-red-500 focus:border-red-500 transition duration-200"
     />
-  </div>
-);
-
-const TextareaField = ({ icon, label, name, value, onChange, placeholder, rows = 3 }) => (
-  <div>
-    <label className="flex items-center text-sm font-medium text-slate-300 mb-2">
-      {icon}
-      <span className="ml-2">{label}</span>
-    </label>
-    <textarea
-      name={name}
-      value={value}
-      onChange={onChange}
-      placeholder={placeholder}
-      rows={rows}
-      className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500 transition resize-y"
-    ></textarea>
-     <p className="text-xs text-slate-500 mt-1">Mỗi dòng sẽ là một gạch đầu dòng trong bảng Gains.</p>
   </div>
 );
 
 export default function GainsGenerator() {
   const [gainsData, setGainsData] = useState({
-    ceo: {
-      photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=200&auto=format&fit=crop',
-      name: 'Nguyễn Thị Bích Hằng',
-      title: 'CEO & Founder tại InnovateX',
-    },
+    ceo: { photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400&auto=format&fit=crop', name: 'Trần Anh Tuấn', title: 'CEO & Founder @ TechCorp' },
     sections: {
-      objective: 'Dẫn dắt InnovateX trở thành công ty tiên phong trong lĩnh vực AI tại Đông Nam Á, đạt doanh thu 10 triệu USD vào năm 2025.',
-      achievements: [
-        'Tăng trưởng doanh thu 300% trong 2 năm liên tiếp.',
-        'Gọi vốn thành công vòng Series A trị giá 5 triệu USD.',
-        'Xây dựng đội ngũ nhân sự từ 10 lên 100 người.',
-      ],
-      interests: [
-        'Phát triển bền vững và ứng dụng công nghệ xanh.',
-        'Xây dựng văn hóa doanh nghiệp sáng tạo và trao quyền.',
-        'Mentoring các startup công nghệ trẻ.',
-      ],
-      ecosystem: [
-        'Quan hệ đối tác chiến lược với các tập đoàn công nghệ lớn.',
-        'Thành viên ban cố vấn của Quỹ đầu tư mạo hiểm ABC.',
-        'Diễn giả thường xuyên tại các sự kiện công nghệ quốc tế.',
-      ],
-      skills: [
-        'Lãnh đạo và xây dựng đội nhóm hiệu suất cao.',
-        'Chiến lược kinh doanh và phát triển sản phẩm AI.',
-        'Gây quỹ và quan hệ nhà đầu tư.',
-      ],
+      objective: 'Dẫn dắt TechCorp trở thành tập đoàn công nghệ hàng đầu Đông Nam Á, tiên phong trong lĩnh vực chuyển đổi số và phát triển giải pháp AI bền vững.',
+      achievements: ['Tăng trưởng doanh thu 300% trong 2 năm', 'Gọi vốn thành công 10 triệu USD vòng Series A', 'Mở rộng thị trường sang 3 quốc gia mới'],
+      interests: ['Phát triển hệ sinh thái AI cho doanh nghiệp SME', 'Xây dựng văn hóa doanh nghiệp số', 'Đầu tư vào các startup công nghệ tiềm năng'],
+      ecosystem: ['Đối tác chiến lược với tập đoàn FPT, Viettel', 'Thành viên hiệp hội Doanh nghiệp Phần mềm Việt Nam (VINASA)', 'Cố vấn chương trình Shark Tank Việt Nam'],
+      skills: ['Lãnh đạo & Xây dựng đội nhóm', 'Chiến lược kinh doanh & Tăng trưởng', 'Huy động vốn & Quan hệ nhà đầu tư', 'Trí tuệ nhân tạo & Khoa học dữ liệu'],
     },
-    contact: {
-      phone: '0912 345 678',
-      email: 'hang.nguyen@innovatex.com',
-      dob: '15/08/1985',
-    },
+    contact: { phone: '0987 654 321', email: 'ceo.anh.tuan@techcorp.vn', dob: '19/05/1985' },
   });
 
-  const [imagePreview, setImagePreview] = useState(gainsData.ceo.photo);
+  const [generationOptions, setGenerationOptions] = useState({
+    orientation: 'vertical',
+    optimizeContent: true,
+    autoIcons: true,
+    suggestLayout: false,
+  });
 
-  const handleCEOChange = (e) => {
+  const [blockColors, setBlockColors] = useState({
+    header: '#1e293b', // slate-800
+    objective: '#ffffff', // white
+    core: '#f1f5f9', // slate-100
+    vision: '#f8fafc', // slate-50
+    contact: '#1e293b', // slate-800
+  });
+
+  const [textColors, setTextColors] = useState({
+    header: '#FFFFFF', // white
+    body: '#334155', // slate-700
+  });
+
+  const previewRef = useRef(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setGainsData(prev => ({ ...prev, ceo: { ...prev.ceo, [name]: value } }));
+    const keys = name.split('.');
+    if (keys.length === 2) {
+      setGainsData(prev => ({ ...prev, [keys[0]]: { ...prev[keys[0]], [keys[1]]: value } }));
+    } else if (keys.length === 3) {
+      setGainsData(prev => ({ ...prev, [keys[0]]: { ...prev[keys[0]], [keys[1]]: { ...prev[keys[0]][keys[1]], [keys[2]]: value } } }));
+    }
   };
 
-  const handleSectionChange = (e) => {
+  const handleListChange = (e) => {
     const { name, value } = e.target;
     setGainsData(prev => ({ ...prev, sections: { ...prev.sections, [name]: value } }));
-  };
-  
-  const handleListSectionChange = (e) => {
-    const { name, value } = e.target;
-    const list = value.split('\n').filter(item => item.trim() !== '');
-    setGainsData(prev => ({ ...prev, sections: { ...prev.sections, [name]: list } }));
-  };
-
-  const handleContactChange = (e) => {
-    const { name, value } = e.target;
-    setGainsData(prev => ({ ...prev, contact: { ...prev.contact, [name]: value } }));
   };
 
   const handleImageChange = (e) => {
@@ -103,99 +79,113 @@ export default function GainsGenerator() {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        const result = reader.result;
-        setImagePreview(result);
-        setGainsData(prev => ({ ...prev, ceo: { ...prev.ceo, photo: result } }));
+        setGainsData(prev => ({ ...prev, ceo: { ...prev.ceo, photo: reader.result } }));
       };
       reader.readAsDataURL(file);
     }
   };
 
+  const handleDownload = () => {
+    // This is a placeholder for a proper image export function (e.g., using html2canvas)
+    alert('Chức năng xuất ảnh đang được phát triển!');
+  };
+
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-200">
-      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-          {/* Left Column: Form */}
-          <motion.div 
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7 }}
-            className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700 space-y-6"
-          >
-            <h2 className="text-2xl font-bold gradient-text">Trình tạo Gains AI</h2>
-            <p className="text-slate-400">Nhập thông tin của bạn vào các trường bên dưới, AI sẽ tự động tạo và cập nhật bảng Gains bên phải.</p>
-            
-            <div className="space-y-4 p-4 bg-slate-900/50 rounded-xl">
-              <h3 className="font-semibold text-lg text-white">Thông tin CEO</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-4">
-                  <InputField icon={<User size={16} />} label="Tên CEO" name="name" value={gainsData.ceo.name} onChange={handleCEOChange} placeholder="VD: Nguyễn Văn A" />
-                  <InputField icon={<Briefcase size={16} />} label="Chức danh" name="title" value={gainsData.ceo.title} onChange={handleCEOChange} placeholder="VD: CEO & Founder" />
-                </div>
-                <div>
-                  <label className="flex items-center text-sm font-medium text-slate-300 mb-2">
-                    <UploadCloud size={16} />
-                    <span className="ml-2">Ảnh chân dung</span>
-                  </label>
-                  <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-600 border-dashed rounded-md">
-                    <div className="space-y-1 text-center">
-                      {imagePreview ? (
-                        <img src={imagePreview} alt="Preview" className="mx-auto h-24 w-24 rounded-full object-cover" />
-                      ) : (
-                        <svg className="mx-auto h-12 w-12 text-slate-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                          <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      )}
-                      <div className="flex text-sm text-slate-500">
-                        <label htmlFor="file-upload" className="relative cursor-pointer bg-slate-700 rounded-md font-medium text-red-400 hover:text-red-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-slate-800 focus-within:ring-red-500 px-2">
-                          <span>Tải ảnh lên</span>
-                          <input id="file-upload" name="file-upload" type="file" className="sr-only" onChange={handleImageChange} accept="image/*" />
-                        </label>
-                        <p className="pl-1">hoặc kéo thả</p>
-                      </div>
-                      <p className="text-xs text-slate-500">PNG, JPG, GIF tối đa 10MB</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+    <div className="min-h-screen max-w-8xl mx-auto p-4 sm:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <motion.div 
+        initial={{ opacity: 0, x: -50 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.7, ease: 'easeOut' }}
+        className="lg:col-span-1 space-y-6 bg-slate-950/50 p-6 rounded-2xl border border-slate-800 h-fit sticky top-24"
+      >
+        <h2 className="text-2xl font-bold gradient-text">Tạo Bảng Gains Của Bạn</h2>
+        
+        {/* CEO Info */}
+        <div className="space-y-4 p-4 bg-slate-800/30 rounded-lg">
+          <h3 className="font-semibold text-slate-200 border-b border-slate-700 pb-2">Thông tin CEO</h3>
+          <div className="flex items-center space-x-4">
+            <div className="w-20 h-20 rounded-full bg-slate-700 flex-shrink-0 overflow-hidden border-2 border-slate-600">
+              <img src={gainsData.ceo.photo} alt="CEO" className="w-full h-full object-cover" />
             </div>
-
-            <div className="space-y-4 p-4 bg-slate-900/50 rounded-xl">
-              <h3 className="font-semibold text-lg text-white">Nội dung Gains</h3>
-              <TextareaField icon={<Target size={16} />} label="Mục tiêu" name="objective" value={gainsData.sections.objective} onChange={handleSectionChange} placeholder="Mô tả mục tiêu chính..." rows={2} />
-              <TextareaField icon={<Award size={16} />} label="Thành tựu" name="achievements" value={gainsData.sections.achievements.join('\n')} onChange={handleListSectionChange} placeholder="Thành tựu 1..." />
-              <TextareaField icon={<Heart size={16} />} label="Mối quan tâm & Định hướng" name="interests" value={gainsData.sections.interests.join('\n')} onChange={handleListSectionChange} placeholder="Mối quan tâm 1..." />
-              <TextareaField icon={<Link size={16} />} label="Mối quan hệ & Hệ sinh thái" name="ecosystem" value={gainsData.sections.ecosystem.join('\n')} onChange={handleListSectionChange} placeholder="Mối quan hệ 1..." />
-              <TextareaField icon={<Wrench size={16} />} label="Kỹ năng cốt lõi" name="skills" value={gainsData.sections.skills.join('\n')} onChange={handleListSectionChange} placeholder="Kỹ năng 1..." />
+            <div className="w-full">
+              <label htmlFor="photo-upload" className="flex items-center justify-center w-full text-xs bg-slate-700/80 hover:bg-slate-700 text-slate-300 py-2 px-3 rounded-md cursor-pointer transition">
+                <UploadCloud size={14} className="mr-2"/> Tải ảnh lên
+              </label>
+              <input id="photo-upload" type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
             </div>
-
-            <div className="space-y-4 p-4 bg-slate-900/50 rounded-xl">
-              <h3 className="font-semibold text-lg text-white">Thông tin liên hệ</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <InputField icon={<Phone size={16} />} label="Số điện thoại" name="phone" value={gainsData.contact.phone} onChange={handleContactChange} placeholder="09xxxxxxxx" />
-                <InputField icon={<Mail size={16} />} label="Email" name="email" value={gainsData.contact.email} onChange={handleContactChange} placeholder="email@example.com" type="email" />
-                <InputField icon={<Calendar size={16} />} label="Ngày sinh" name="dob" value={gainsData.contact.dob} onChange={handleContactChange} placeholder="DD/MM/YYYY" />
-              </div>
-            </div>
-            
-            <button className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 to-orange-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg shadow-red-500/20 hover:scale-105 transform transition-transform duration-300">
-              <Wand2 size={20} />
-              <span>Tối ưu bằng AI & Xuất bản</span>
-            </button>
-
-          </motion.div>
-
-          {/* Right Column: Preview */}
-          <motion.div 
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7 }}
-            className="sticky top-24"
-          >
-            <GainsPreview data={gainsData} />
-          </motion.div>
+          </div>
+          <InputField icon={<User size={16} className="text-slate-400"/>} label="Tên CEO" name="ceo.name" value={gainsData.ceo.name} onChange={handleInputChange} placeholder="VD: Nguyễn Văn A" />
+          <InputField icon={<Briefcase size={16} className="text-slate-400"/>} label="Chức danh" name="ceo.title" value={gainsData.ceo.title} onChange={handleInputChange} placeholder="VD: CEO & Founder @ Tên công ty" />
         </div>
-      </div>
+
+        {/* Sections Info */}
+        <div className="space-y-4 p-4 bg-slate-800/30 rounded-lg">
+          <h3 className="font-semibold text-slate-200 border-b border-slate-700 pb-2">Nội dung Gains</h3>
+          <div>
+            <label className="flex items-center text-sm font-medium text-slate-300 mb-2"><Target size={16} className="text-slate-400"/><span className="ml-2">Mục tiêu</span></label>
+            <textarea name="sections.objective" value={gainsData.sections.objective} onChange={handleInputChange} placeholder="Mô tả mục tiêu chính..." rows="3" className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 placeholder-slate-500 focus:ring-2 focus:ring-red-500 focus:border-red-500 transition duration-200"></textarea>
+          </div>
+          <DynamicListInput label="Thành tựu" icon={<Award size={16} className="text-slate-400"/>} name="achievements" value={gainsData.sections.achievements} onChange={handleListChange} placeholder="Thêm một thành tựu..." />
+          <DynamicListInput label="Mối quan tâm & Định hướng" icon={<Heart size={16} className="text-slate-400"/>} name="interests" value={gainsData.sections.interests} onChange={handleListChange} placeholder="Thêm một mối quan tâm..." />
+          <DynamicListInput label="Mối quan hệ & Hệ sinh thái" icon={<LinkIcon size={16} className="text-slate-400"/>} name="ecosystem" value={gainsData.sections.ecosystem} onChange={handleListChange} placeholder="Thêm một mối quan hệ..." />
+          <DynamicListInput label="Kỹ năng cốt lõi" icon={<Wrench size={16} className="text-slate-400"/>} name="skills" value={gainsData.sections.skills} onChange={handleListChange} placeholder="Thêm một kỹ năng..." />
+        </div>
+
+        {/* Contact Info */}
+        <div className="space-y-4 p-4 bg-slate-800/30 rounded-lg">
+          <h3 className="font-semibold text-slate-200 border-b border-slate-700 pb-2">Thông tin liên hệ</h3>
+          <InputField icon={<Phone size={16} className="text-slate-400"/>} label="Số điện thoại" name="contact.phone" value={gainsData.contact.phone} onChange={handleInputChange} placeholder="0123 456 789" />
+          <InputField icon={<Mail size={16} className="text-slate-400"/>} label="Email" name="contact.email" value={gainsData.contact.email} onChange={handleInputChange} placeholder="email@example.com" type="email" />
+          <InputField icon={<Calendar size={16} className="text-slate-400"/>} label="Ngày sinh" name="contact.dob" value={gainsData.contact.dob} onChange={handleInputChange} placeholder="DD/MM/YYYY" />
+        </div>
+      </motion.div>
+
+      <motion.div 
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, ease: 'easeOut', delay: 0.2 }}
+        className="lg:col-span-2 space-y-6"
+      >
+        <div className="sticky top-24 space-y-6">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <GenerationOptions options={generationOptions} onOptionsChange={setGenerationOptions} />
+            <ColorOptions 
+              blockColors={blockColors} 
+              onBlockColorsChange={setBlockColors}
+              textColors={textColors}
+              onTextColorsChange={setTextColors}
+            />
+          </div>
+          <div className="p-4 sm:p-6 bg-slate-800/30 rounded-2xl border border-slate-800">
+            <h3 className="text-lg font-semibold text-slate-100 mb-4">Xem trước</h3>
+            <div className="aspect-[1/1.414] bg-slate-950 rounded-lg p-4 overflow-auto">
+              <GainsPreview 
+                ref={previewRef} 
+                data={gainsData} 
+                options={generationOptions} 
+                blockColors={blockColors}
+                textColors={textColors}
+              />
+            </div>
+          </div>
+          <div className="flex justify-end items-center gap-4">
+            <button 
+              onClick={() => alert('AI đang tối ưu nội dung...')} 
+              className="flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 text-slate-200 font-semibold py-3 px-6 rounded-lg transition-colors duration-300"
+            >
+              <Wand2 size={18} />
+              Tối ưu bằng AI
+            </button>
+            <button 
+              onClick={handleDownload} 
+              className="flex items-center justify-center gap-2 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white font-semibold py-3 px-8 rounded-lg shadow-lg shadow-red-500/20 hover:shadow-xl hover:shadow-red-500/30 transition-all duration-300 transform hover:scale-105"
+            >
+              {isGenerating ? <Loader size={20} className="animate-spin" /> : <Download size={20} />}
+              <span className="ml-2">Xuất bản Gains</span>
+            </button>
+          </div>
+        </div>
+      </motion.div>
     </div>
   );
 }
