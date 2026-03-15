@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { User, Briefcase, Target, Award, Heart, Link as LinkIcon, Wrench, Phone, Mail, Calendar, UploadCloud, Wand2, Loader, Palette, Download } from 'lucide-react';
+import { User, Briefcase, Target, Award, Heart, Link as LinkIcon, Wrench, Phone, Mail, Calendar, UploadCloud, Download, Palette } from 'lucide-react';
 import { motion } from 'framer-motion';
 import GainsPreview from './GainsPreview';
 import DynamicListInput from './DynamicListInput';
@@ -18,22 +18,39 @@ const InputField = ({ icon, label, name, value, onChange, placeholder, type = "t
       value={value}
       onChange={onChange}
       placeholder={placeholder}
-      className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 placeholder-slate-500 focus:ring-2 focus:ring-red-500 focus:border-red-500 transition duration-200"
+      className="w-full bg-slate-700/50 border border-slate-600 rounded-lg py-2 px-4 text-slate-200 placeholder-slate-500 focus:ring-2 focus:ring-red-500 focus:border-red-500 transition"
+    />
+  </div>
+);
+
+const TextAreaField = ({ icon, label, name, value, onChange, placeholder }) => (
+  <div>
+    <label className="flex items-center text-sm font-medium text-slate-300 mb-2">
+      {icon}
+      <span className="ml-2">{label}</span>
+    </label>
+    <textarea
+      name={name}
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+      rows="3"
+      className="w-full bg-slate-700/50 border border-slate-600 rounded-lg py-2 px-4 text-slate-200 placeholder-slate-500 focus:ring-2 focus:ring-red-500 focus:border-red-500 transition"
     />
   </div>
 );
 
 export default function GainsGenerator() {
   const [gainsData, setGainsData] = useState({
-    ceo: { photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400&auto=format&fit=crop', name: 'Trần Anh Tuấn', title: 'CEO & Founder @ TechCorp' },
+    ceo: { photo: null, name: 'Nguyễn Văn An', title: 'Founder & CEO tại TechCorp' },
     sections: {
-      objective: 'Dẫn dắt TechCorp trở thành tập đoàn công nghệ hàng đầu Đông Nam Á, tiên phong trong lĩnh vực chuyển đổi số và phát triển giải pháp AI bền vững.',
-      achievements: ['Tăng trưởng doanh thu 300% trong 2 năm', 'Gọi vốn thành công 10 triệu USD vòng Series A', 'Mở rộng thị trường sang 3 quốc gia mới'],
-      interests: ['Phát triển hệ sinh thái AI cho doanh nghiệp SME', 'Xây dựng văn hóa doanh nghiệp số', 'Đầu tư vào các startup công nghệ tiềm năng'],
-      ecosystem: ['Đối tác chiến lược với tập đoàn FPT, Viettel', 'Thành viên hiệp hội Doanh nghiệp Phần mềm Việt Nam (VINASA)', 'Cố vấn chương trình Shark Tank Việt Nam'],
-      skills: ['Lãnh đạo & Xây dựng đội nhóm', 'Chiến lược kinh doanh & Tăng trưởng', 'Huy động vốn & Quan hệ nhà đầu tư', 'Trí tuệ nhân tạo & Khoa học dữ liệu'],
+      objective: 'Dẫn dắt TechCorp trở thành công ty công nghệ hàng đầu trong lĩnh vực AI và chuyển đổi số tại Đông Nam Á.',
+      achievements: ['Tăng trưởng doanh thu 300% trong 2 năm', 'Gọi vốn thành công vòng Series A 5 triệu USD', 'Phát triển sản phẩm đạt 1 triệu người dùng'],
+      interests: ['Ứng dụng AI trong giáo dục', 'Phát triển bền vững', 'Xây dựng văn hóa doanh nghiệp'],
+      ecosystem: ['Quỹ đầu tư ABC', 'Hiệp hội Doanh nghiệp trẻ', 'Cộng đồng khởi nghiệp XYZ'],
+      skills: ['Lãnh đạo & Quản trị', 'Chiến lược kinh doanh', 'Phát triển sản phẩm công nghệ'],
     },
-    contact: { phone: '0987 654 321', email: 'ceo.anh.tuan@techcorp.vn', dob: '19/05/1985' },
+    contact: { phone: '0912 345 678', email: 'ceo.an@techcorp.vn', dob: '19/05/1985' },
   });
 
   const [generationOptions, setGenerationOptions] = useState({
@@ -44,34 +61,33 @@ export default function GainsGenerator() {
   });
 
   const [blockColors, setBlockColors] = useState({
-    header: '#1e293b', // slate-800
-    objective: '#ffffff', // white
-    core: '#f1f5f9', // slate-100
-    vision: '#f8fafc', // slate-50
-    contact: '#1e293b', // slate-800
+    header: '#1E293B',
+    objective: '#334155',
+    core: '#334155',
+    vision: '#475569',
+    contact: '#0F172A',
   });
 
   const [textColors, setTextColors] = useState({
-    header: '#FFFFFF', // white
-    body: '#334155', // slate-700
+    header: '#F1F5F9',
+    body: '#94A3B8',
   });
 
   const previewRef = useRef(null);
-  const [isGenerating, setIsGenerating] = useState(false);
 
-  const handleInputChange = (e) => {
+  const handleDataChange = (e) => {
     const { name, value } = e.target;
     const keys = name.split('.');
-    if (keys.length === 2) {
-      setGainsData(prev => ({ ...prev, [keys[0]]: { ...prev[keys[0]], [keys[1]]: value } }));
-    } else if (keys.length === 3) {
-      setGainsData(prev => ({ ...prev, [keys[0]]: { ...prev[keys[0]], [keys[1]]: { ...prev[keys[0]][keys[1]], [keys[2]]: value } } }));
-    }
-  };
-
-  const handleListChange = (e) => {
-    const { name, value } = e.target;
-    setGainsData(prev => ({ ...prev, sections: { ...prev.sections, [name]: value } }));
+    
+    setGainsData(prev => {
+      const updated = JSON.parse(JSON.stringify(prev));
+      let current = updated;
+      for (let i = 0; i < keys.length - 1; i++) {
+        current = current[keys[i]];
+      }
+      current[keys[keys.length - 1]] = value;
+      return updated;
+    });
   };
 
   const handleImageChange = (e) => {
@@ -85,107 +101,77 @@ export default function GainsGenerator() {
     }
   };
 
-  const handleDownload = () => {
-    // This is a placeholder for a proper image export function (e.g., using html2canvas)
-    alert('Chức năng xuất ảnh đang được phát triển!');
-  };
-
   return (
-    <div className="min-h-screen max-w-8xl mx-auto p-4 sm:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <motion.div 
-        initial={{ opacity: 0, x: -50 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.7, ease: 'easeOut' }}
-        className="lg:col-span-1 space-y-6 bg-slate-950/50 p-6 rounded-2xl border border-slate-800 h-fit sticky top-24"
-      >
-        <h2 className="text-2xl font-bold gradient-text">Tạo Bảng Gains Của Bạn</h2>
+    <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="grid lg:grid-cols-12 gap-8">
         
-        {/* CEO Info */}
-        <div className="space-y-4 p-4 bg-slate-800/30 rounded-lg">
-          <h3 className="font-semibold text-slate-200 border-b border-slate-700 pb-2">Thông tin CEO</h3>
-          <div className="flex items-center space-x-4">
-            <div className="w-20 h-20 rounded-full bg-slate-700 flex-shrink-0 overflow-hidden border-2 border-slate-600">
-              <img src={gainsData.ceo.photo} alt="CEO" className="w-full h-full object-cover" />
-            </div>
-            <div className="w-full">
-              <label htmlFor="photo-upload" className="flex items-center justify-center w-full text-xs bg-slate-700/80 hover:bg-slate-700 text-slate-300 py-2 px-3 rounded-md cursor-pointer transition">
-                <UploadCloud size={14} className="mr-2"/> Tải ảnh lên
+        <motion.div 
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5 }}
+          className="lg:col-span-5 xl:col-span-4 space-y-6 max-h-[calc(100vh-8rem)] overflow-y-auto pr-4"
+        >
+          <div className="bg-slate-800/50 border border-slate-700 rounded-2xl p-6 space-y-4">
+            <h3 className="text-lg font-semibold text-slate-100">Thông tin CEO</h3>
+            <InputField icon={<User size={16} />} label="Tên CEO" name="ceo.name" value={gainsData.ceo.name} onChange={handleDataChange} />
+            <InputField icon={<Briefcase size={16} />} label="Chức danh" name="ceo.title" value={gainsData.ceo.title} onChange={handleDataChange} />
+            <div>
+              <label className="flex items-center text-sm font-medium text-slate-300 mb-2">
+                <UploadCloud size={16} /><span className="ml-2">Ảnh chân dung</span>
               </label>
-              <input id="photo-upload" type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
+              <input type="file" onChange={handleImageChange} accept="image/*" className="text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-500/10 file:text-red-400 hover:file:bg-red-500/20"/>
             </div>
           </div>
-          <InputField icon={<User size={16} className="text-slate-400"/>} label="Tên CEO" name="ceo.name" value={gainsData.ceo.name} onChange={handleInputChange} placeholder="VD: Nguyễn Văn A" />
-          <InputField icon={<Briefcase size={16} className="text-slate-400"/>} label="Chức danh" name="ceo.title" value={gainsData.ceo.title} onChange={handleInputChange} placeholder="VD: CEO & Founder @ Tên công ty" />
-        </div>
 
-        {/* Sections Info */}
-        <div className="space-y-4 p-4 bg-slate-800/30 rounded-lg">
-          <h3 className="font-semibold text-slate-200 border-b border-slate-700 pb-2">Nội dung Gains</h3>
-          <div>
-            <label className="flex items-center text-sm font-medium text-slate-300 mb-2"><Target size={16} className="text-slate-400"/><span className="ml-2">Mục tiêu</span></label>
-            <textarea name="sections.objective" value={gainsData.sections.objective} onChange={handleInputChange} placeholder="Mô tả mục tiêu chính..." rows="3" className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 placeholder-slate-500 focus:ring-2 focus:ring-red-500 focus:border-red-500 transition duration-200"></textarea>
+          <div className="bg-slate-800/50 border border-slate-700 rounded-2xl p-6 space-y-4">
+            <h3 className="text-lg font-semibold text-slate-100">Nội dung Gains</h3>
+            <TextAreaField icon={<Target size={16} />} label="Mục tiêu" name="sections.objective" value={gainsData.sections.objective} onChange={handleDataChange} />
+            <DynamicListInput icon={<Award size={16} />} label="Thành tựu" name="sections.achievements" value={gainsData.sections.achievements} onChange={handleDataChange} />
+            <DynamicListInput icon={<Heart size={16} />} label="Mối quan tâm & Định hướng" name="sections.interests" value={gainsData.sections.interests} onChange={handleDataChange} />
+            <DynamicListInput icon={<LinkIcon size={16} />} label="Mối quan hệ & Hệ sinh thái" name="sections.ecosystem" value={gainsData.sections.ecosystem} onChange={handleDataChange} />
+            <DynamicListInput icon={<Wrench size={16} />} label="Kỹ năng cốt lõi" name="sections.skills" value={gainsData.sections.skills} onChange={handleDataChange} />
           </div>
-          <DynamicListInput label="Thành tựu" icon={<Award size={16} className="text-slate-400"/>} name="achievements" value={gainsData.sections.achievements} onChange={handleListChange} placeholder="Thêm một thành tựu..." />
-          <DynamicListInput label="Mối quan tâm & Định hướng" icon={<Heart size={16} className="text-slate-400"/>} name="interests" value={gainsData.sections.interests} onChange={handleListChange} placeholder="Thêm một mối quan tâm..." />
-          <DynamicListInput label="Mối quan hệ & Hệ sinh thái" icon={<LinkIcon size={16} className="text-slate-400"/>} name="ecosystem" value={gainsData.sections.ecosystem} onChange={handleListChange} placeholder="Thêm một mối quan hệ..." />
-          <DynamicListInput label="Kỹ năng cốt lõi" icon={<Wrench size={16} className="text-slate-400"/>} name="skills" value={gainsData.sections.skills} onChange={handleListChange} placeholder="Thêm một kỹ năng..." />
-        </div>
 
-        {/* Contact Info */}
-        <div className="space-y-4 p-4 bg-slate-800/30 rounded-lg">
-          <h3 className="font-semibold text-slate-200 border-b border-slate-700 pb-2">Thông tin liên hệ</h3>
-          <InputField icon={<Phone size={16} className="text-slate-400"/>} label="Số điện thoại" name="contact.phone" value={gainsData.contact.phone} onChange={handleInputChange} placeholder="0123 456 789" />
-          <InputField icon={<Mail size={16} className="text-slate-400"/>} label="Email" name="contact.email" value={gainsData.contact.email} onChange={handleInputChange} placeholder="email@example.com" type="email" />
-          <InputField icon={<Calendar size={16} className="text-slate-400"/>} label="Ngày sinh" name="contact.dob" value={gainsData.contact.dob} onChange={handleInputChange} placeholder="DD/MM/YYYY" />
-        </div>
-      </motion.div>
-
-      <motion.div 
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, ease: 'easeOut', delay: 0.2 }}
-        className="lg:col-span-2 space-y-6"
-      >
-        <div className="sticky top-24 space-y-6">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <GenerationOptions options={generationOptions} onOptionsChange={setGenerationOptions} />
-            <ColorOptions 
-              blockColors={blockColors} 
-              onBlockColorsChange={setBlockColors}
-              textColors={textColors}
-              onTextColorsChange={setTextColors}
-            />
+          <div className="bg-slate-800/50 border border-slate-700 rounded-2xl p-6 space-y-4">
+            <h3 className="text-lg font-semibold text-slate-100">Thông tin liên hệ</h3>
+            <InputField icon={<Phone size={16} />} label="Số điện thoại" name="contact.phone" value={gainsData.contact.phone} onChange={handleDataChange} />
+            <InputField icon={<Mail size={16} />} label="Email" name="contact.email" value={gainsData.contact.email} onChange={handleDataChange} />
+            <InputField icon={<Calendar size={16} />} label="Ngày sinh" name="contact.dob" value={gainsData.contact.dob} onChange={handleDataChange} />
           </div>
-          <div className="p-4 sm:p-6 bg-slate-800/30 rounded-2xl border border-slate-800">
-            <h3 className="text-lg font-semibold text-slate-100 mb-4">Xem trước</h3>
-            <div className="aspect-[1/1.414] bg-slate-950 rounded-lg p-4 overflow-auto">
-              <GainsPreview 
-                ref={previewRef} 
-                data={gainsData} 
-                options={generationOptions} 
+
+          <GenerationOptions
+            options={generationOptions}
+            setOptions={setGenerationOptions}
+          />
+
+          <ColorOptions
+            blockColors={blockColors}
+            textColors={textColors}
+            setBlockColors={setBlockColors}
+            setTextColors={setTextColors}
+          />
+        </motion.div>
+
+        <div className="lg:col-span-7 xl:col-span-8">
+          <div className="sticky top-24">
+            <div className="aspect-[800/1128] w-full bg-slate-800 rounded-2xl overflow-hidden flex items-center justify-center relative border border-slate-700 shadow-2xl shadow-red-500/10">
+              <GainsPreview
+                ref={previewRef}
+                data={gainsData}
+                options={generationOptions}
                 blockColors={blockColors}
                 textColors={textColors}
               />
             </div>
-          </div>
-          <div className="flex justify-end items-center gap-4">
-            <button 
-              onClick={() => alert('AI đang tối ưu nội dung...')} 
-              className="flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 text-slate-200 font-semibold py-3 px-6 rounded-lg transition-colors duration-300"
-            >
-              <Wand2 size={18} />
-              Tối ưu bằng AI
-            </button>
-            <button 
-              onClick={handleDownload} 
-              className="flex items-center justify-center gap-2 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white font-semibold py-3 px-8 rounded-lg shadow-lg shadow-red-500/20 hover:shadow-xl hover:shadow-red-500/30 transition-all duration-300 transform hover:scale-105"
-            >
-              {isGenerating ? <Loader size={20} className="animate-spin" /> : <Download size={20} />}
-              <span className="ml-2">Xuất bản Gains</span>
-            </button>
+            <div className="mt-6 flex justify-end">
+              <button className="flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 to-orange-500 text-white font-bold py-3 px-6 rounded-lg hover:opacity-90 transition-opacity duration-300 shadow-lg shadow-red-500/20">
+                <Download size={20} />
+                <span>Tải xuống Gains</span>
+              </button>
+            </div>
           </div>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }
