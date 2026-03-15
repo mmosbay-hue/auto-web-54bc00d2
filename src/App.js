@@ -1,14 +1,22 @@
 import React from 'react';
 import Header from './components/Header';
-import GainsGenerator from './components/GainsGenerator';
+import Hero from './components/Hero';
+import Features from './components/Features';
+import HowItWorks from './components/HowItWorks';
+import Testimonials from './components/Testimonials';
+import CTASection from './components/CTASection';
 import Footer from './components/Footer';
 
 export default function App() {
   return (
-    <div className="bg-slate-950 text-slate-200 antialiased min-h-screen flex flex-col">
+    <div className="bg-slate-950 text-slate-200 antialiased">
       <Header />
-      <main className="flex-grow pt-24 pb-12">
-        <GainsGenerator />
+      <main>
+        <Hero />
+        <Features />
+        <HowItWorks />
+        <Testimonials />
+        <CTASection />
       </main>
       <Footer />
     </div>
