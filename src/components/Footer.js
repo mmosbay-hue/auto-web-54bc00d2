@@ -13,27 +13,28 @@ export default function Footer() {
     <footer className="bg-slate-900 border-t border-slate-800">
       <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row justify-between items-center space-y-8 md:space-y-0">
-          <div className="flex items-center">
+          <div className="flex items-center space-x-2">
             <Target className="h-8 w-8 text-red-500" />
-            <span className="ml-3 text-2xl font-bold text-white">Gains AI</span>
+            <span className="text-2xl font-bold text-white">Gains<span className="gradient-text">AI</span></span>
           </div>
-          <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2">
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 md:order-2">
             {footerLinks.map((link) => (
               <a key={link} href="#" className="text-base text-slate-400 hover:text-white transition-colors">
                 {link}
               </a>
             ))}
-          </nav>
-          <div className="flex space-x-6">
+          </div>
+          <div className="flex justify-center space-x-6 md:order-3">
             {socialIcons.map((social, index) => (
               <a key={index} href={social.href} className="text-slate-400 hover:text-white transition-colors">
+                <span className="sr-only">{social.icon.type.displayName}</span>
                 {social.icon}
               </a>
             ))}
           </div>
         </div>
-        <div className="mt-8 text-center text-slate-500 text-sm">
-          <p>&copy; {new Date().getFullYear()} Gains AI. All rights reserved.</p>
+        <div className="mt-8 text-center text-base text-slate-500">
+          <p>&copy; {new Date().getFullYear()} GainsAI. All rights reserved.</p>
         </div>
       </div>
     </footer>
